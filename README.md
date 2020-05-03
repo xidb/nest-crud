@@ -2,26 +2,20 @@
 
 ### Installation
 
-
 `npm install`
 
 ### Running
 
 This app requires docker.
 
-#### Docker
+#### Run Docker
 
-There is a `docker-compose.yml` file for starting Docker.
+MongoDB is inside Docker container. There is a `docker-compose.yml` file for starting Docker. Run it with:
 
 `docker-compose up`
 
-After running the sample, you can stop the Docker container with
-
-`docker-compose down`
-
-### Run the sample
+#### Run the app
 
 Then, run Nest as usual:
 
 `npm run start`
-
