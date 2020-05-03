@@ -5,13 +5,15 @@ import {
   UseInterceptors,
   Get,
   Post,
+  Put,
   Delete,
   UseFilters,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { IUser } from './interfaces/user.interface';
 import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersDuplicateExceptionFilter } from './exception-filters/duplicate.exception-filter';
+import { IUser } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -27,6 +29,16 @@ export class UsersController {
   @UseFilters(UsersDuplicateExceptionFilter)
   async create(@Body() createUserDto: CreateUserDto): Promise<void> {
     await this.usersService.create(createUserDto);
+  }
+
+  @Put(':id')
+  @UseFilters(UsersDuplicateExceptionFilter)
+  @UseInterceptors(new NotFoundInterceptor('User not found'))
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<boolean> {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
