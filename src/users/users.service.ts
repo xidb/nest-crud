@@ -12,12 +12,12 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async create(createUserDto: CreateUserDto): Promise<IUser> {
-    const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+  async create(userInput: CreateUserDto): Promise<IUser> {
+    const createdUser = new this.userModel(userInput);
+    return await createdUser.save();
   }
 
-  async remove(id): Promise<any> {
-    return this.userModel.findByIdAndDelete(id);
+  async remove(id): Promise<boolean> {
+    return (await this.userModel.findByIdAndDelete(id)) !== null;
   }
 }
