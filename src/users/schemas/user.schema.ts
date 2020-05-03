@@ -5,4 +5,5 @@ export const UserSchema = new Schema({
     type: String,
     unique: true,
   },
+  roles: [String],
 });

@@ -6,5 +6,6 @@ export class UpdateRoleDto {
   @IsOptional()
   readonly role: RoleType;
 
+  @IsOptional()
   readonly groupId: string;
 }
