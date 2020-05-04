@@ -56,4 +56,31 @@ export class RolesService {
   static isGlobalManager(roleMap: IRoleMap): boolean {
     return Object.values(roleMap).includes(0);
   }
+
+  async hasAccess(
+    roleMap: IRoleMap,
+    roleIds: IRole['_id'][],
+  ): Promise<boolean> {
+    if (!roleIds.length) {
+      return true;
+    }
+
+    const resourceRoleMap = await this.getRoleMap(roleIds);
+
+    for (const roleId in roleMap) {
+      if (!roleMap.hasOwnProperty(roleId)) {
+        continue;
+      }
+
+      if (!resourceRoleMap[roleId]) {
+        continue;
+      }
+
+      if (roleMap[roleId] <= resourceRoleMap[roleId]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { asyncFilter } from '../util';
 import { RolesService } from '../roles/roles.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -27,6 +28,9 @@ export class UsersService {
     if (this.actor.isGlobalManager) {
       return users;
     } else {
+      return asyncFilter(users, user =>
+        this.rolesService.hasAccess(this.actor.roleMap, user.roles),
+      );
     }
   }
 
