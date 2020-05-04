@@ -1,26 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { BaseService } from '../base/base.service';
 import { asyncFilter } from '../util';
 import { RolesService } from '../roles/roles.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { IActor } from './interfaces/actor.interface';
 import { IUser } from './interfaces/user.interface';
 
-@Injectable()
-export class UsersService {
+export class UsersService extends BaseService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<IUser>,
     private readonly rolesService: RolesService,
-  ) {}
-
-  private actor: IActor;
-
-  setActor(actor): void {
-    if (!this.actor) {
-      this.actor = actor;
-    }
+  ) {
+    super();
   }
 
   async findAll(): Promise<IUser[]> {

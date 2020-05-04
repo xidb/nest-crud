@@ -1,23 +1,16 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { BaseService } from '../base/base.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { IActor } from '../users/interfaces/actor.interface';
 import { IGroup } from './interfaces/group.interface';
 
-@Injectable()
-export class GroupsService {
+export class GroupsService extends BaseService {
   constructor(
     @InjectModel('Group') private readonly groupModel: Model<IGroup>,
-  ) {}
-
-  private actor: IActor;
-
-  setActor(actor): void {
-    if (!this.actor) {
-      this.actor = actor;
-    }
+  ) {
+    super();
   }
 
   async findAll(): Promise<IGroup[]> {

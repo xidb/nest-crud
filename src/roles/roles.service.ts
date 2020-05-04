@@ -1,25 +1,17 @@
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IActor } from '../users/interfaces/actor.interface';
+import { BaseService } from '../base/base.service';
+import { asyncFilter } from '../util';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './enums/role-type.enum';
 import { IRole } from './interfaces/role.interface';
 import { IRoleMap } from './interfaces/role-map.interface';
 import { IGroupMap } from './interfaces/group-map.interface';
-import { asyncFilter } from '../util';
 
-@Injectable()
-export class RolesService {
-  constructor(@InjectModel('Role') private readonly roleModel: Model<IRole>) {}
-
-  private actor: IActor;
-
-  setActor(actor): void {
-    if (!this.actor) {
-      this.actor = actor;
-    }
+export class RolesService extends BaseService {
+  constructor(@InjectModel('Role') private readonly roleModel: Model<IRole>) {
+    super();
   }
 
   async findAll(): Promise<IRole[]> {
