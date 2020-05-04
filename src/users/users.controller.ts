@@ -31,12 +31,14 @@ export class UsersController {
 
   @Get()
   async findAll(): Promise<IUser[]> {
+    this.usersService.setActor(this.request.user);
     return this.usersService.findAll();
   }
 
   @Post()
   @UseFilters(UsersDuplicateExceptionFilter)
   async create(@Body() createUserDto: CreateUserDto): Promise<void> {
+    this.usersService.setActor(this.request.user);
     await this.usersService.create(createUserDto);
   }
 
@@ -47,12 +49,14 @@ export class UsersController {
     @Param('id') id: IUser['_id'],
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<boolean> {
+    this.usersService.setActor(this.request.user);
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @UseInterceptors(new NotFoundInterceptor('User not found'))
   async remove(@Param('id') id: IUser['_id']): Promise<boolean> {
+    this.usersService.setActor(this.request.user);
     return this.usersService.remove(id);
   }
 }
