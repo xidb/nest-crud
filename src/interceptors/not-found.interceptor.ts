@@ -15,7 +15,7 @@ export class NotFoundInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, stream$: CallHandler): Observable<any> {
     return stream$.handle().pipe(
       tap(data => {
-        if (!data) {
+        if (data === false) {
           throw new NotFoundException(this.errorMessage);
         }
       }),

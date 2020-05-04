@@ -48,14 +48,14 @@ export class UsersController {
   async update(
     @Param('id') id: IUser['_id'],
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<boolean> {
+  ): Promise<boolean | void> {
     this.usersService.setActor(this.request.user);
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @UseInterceptors(new NotFoundInterceptor('User not found'))
-  async remove(@Param('id') id: IUser['_id']): Promise<boolean> {
+  async remove(@Param('id') id: IUser['_id']): Promise<boolean | void> {
     this.usersService.setActor(this.request.user);
     return this.usersService.remove(id);
   }
