@@ -1,5 +1,6 @@
 import {
   ArrayUnique,
+  IsArray,
   IsEmail,
   IsOptional,
   IsString,
@@ -13,6 +14,7 @@ export class UpdateUserDto extends ContextAwareDto {
   @IsEmail()
   readonly email: string;
 
+  @IsArray()
   @IsOptional()
   @IsString({ each: true })
   @ArrayUnique()
