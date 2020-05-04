@@ -13,7 +13,7 @@ export class RolesValidator implements ValidatorConstraintInterface {
     roles: string[],
     args: IContextValidatonArguments,
   ): Promise<boolean> {
-    const actor = args.object.context.user;
+    const { isGlobalManager, roleMap } = args.object.context.user;
 
     try {
       for (const id of roles) {
@@ -24,6 +24,11 @@ export class RolesValidator implements ValidatorConstraintInterface {
         const role = await this.rolesService.findById(id);
         if (!role) {
           return false;
+        }
+        if (!isGlobalManager) {
+          if (!(await this.rolesService.hasAccess(roleMap, [id]))) {
+            return false;
+          }
         }
       }
     } catch (e) {
