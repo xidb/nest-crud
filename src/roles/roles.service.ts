@@ -3,7 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { RoleType } from './enums/role-type.enum';
 import { IRole } from './interfaces/role.interface';
+import { IRoleMap } from './interfaces/role-map.interface';
 
 @Injectable()
 export class RolesService {
@@ -28,5 +30,26 @@ export class RolesService {
 
   async remove(id: string): Promise<boolean> {
     return (await this.roleModel.findByIdAndDelete(id)) !== null;
+  }
+
+  async getRoleMap(ids: IRole['_id'][]): Promise<IRoleMap> {
+    const roles = await this.findByIds(ids);
+
+    return roles.reduce((acc: IRoleMap, role: IRole) => {
+      acc[role._id] = RolesService.convertRoleTypeToNumeric(role.role);
+      return acc;
+    }, {});
+  }
+
+  private async findByIds(ids: string[]): Promise<IRole[]> {
+    return this.roleModel
+      .find()
+      .where('_id')
+      .in(ids)
+      .exec();
+  }
+
+  private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
+    return Object.values(RoleType).indexOf(roleType);
   }
 }
