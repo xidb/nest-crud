@@ -3,10 +3,10 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { IContextValidatonArguments } from '../../interceptors/interfaces/context-validation-arguments.interface';
-import { RolesService } from '../roles.service';
+import { RolesService } from '../../roles/roles.service';
 
 @ValidatorConstraint()
-export class RolesValidator implements ValidatorConstraintInterface {
+export class UserRolesValidator implements ValidatorConstraintInterface {
   constructor(private readonly rolesService: RolesService) {}
 
   async validate(
