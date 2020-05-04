@@ -1,7 +1,8 @@
 import { ArrayUnique, IsEmail, IsString, Validate } from 'class-validator';
+import { ContextAwareDto } from '../../validation/context-aware.dto';
 import { UserRolesValidator } from '../validators/roles.validator';
 
-export class CreateUserDto {
+export class CreateUserDto extends ContextAwareDto {
   @IsEmail()
   readonly email: string;
 

@@ -7,7 +7,12 @@ import { ContextInterceptor } from './interceptors/context.interceptor';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new ContextInterceptor());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   await app.listen(3000);
   console.log(`Application is running on: ${await app.getUrl()}`);

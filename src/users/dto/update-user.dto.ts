@@ -5,9 +5,10 @@ import {
   IsString,
   Validate,
 } from 'class-validator';
+import { ContextAwareDto } from '../../validation/context-aware.dto';
 import { UserRolesValidator } from '../validators/roles.validator';
 
-export class UpdateUserDto {
+export class UpdateUserDto extends ContextAwareDto {
   @IsOptional()
   @IsEmail()
   readonly email: string;
