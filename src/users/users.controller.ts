@@ -1,4 +1,6 @@
 import {
+  UseGuards,
+  Inject,
   Controller,
   Body,
   Param,
@@ -9,6 +11,9 @@ import {
   Delete,
   UseFilters,
 } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,9 +21,13 @@ import { UsersDuplicateExceptionFilter } from './exception-filters/duplicate.exc
 import { IUser } from './interfaces/user.interface';
 import { UsersService } from './users.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(REQUEST) private request: Request,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get()
   async findAll(): Promise<IUser[]> {

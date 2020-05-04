@@ -1,4 +1,5 @@
 import {
+  UseGuards,
   Controller,
   Body,
   Param,
@@ -8,12 +9,14 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { IRole } from './interfaces/role.interface';
 import { RolesService } from './roles.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
