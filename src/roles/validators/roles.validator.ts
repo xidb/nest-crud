@@ -2,13 +2,19 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { IContextValidatonArguments } from '../../interceptors/interfaces/context-validation-arguments.interface';
 import { RolesService } from '../roles.service';
 
 @ValidatorConstraint()
 export class RolesValidator implements ValidatorConstraintInterface {
   constructor(private readonly rolesService: RolesService) {}
 
-  async validate(roles: string[]): Promise<boolean> {
+  async validate(
+    roles: string[],
+    args: IContextValidatonArguments,
+  ): Promise<boolean> {
+    const actor = args.object.context.user;
+
     try {
       for (const id of roles) {
         if (typeof id !== 'string') {
