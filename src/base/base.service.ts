@@ -6,8 +6,6 @@ export class BaseService {
   protected actor: IActor;
 
   setActor(actor): void {
-    if (!this.actor) {
-      this.actor = actor;
-    }
+    this.actor = actor;
   }
 }
