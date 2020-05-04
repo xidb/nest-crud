@@ -29,7 +29,7 @@ export class UsersService {
       return users;
     } else {
       return asyncFilter(users, ({ roles }) =>
-        this.rolesService.hasGroupAccess(this.actor.groupMap, roles),
+        this.rolesService.canManage(this.actor.groupMap, roles),
       );
     }
   }
@@ -54,9 +54,7 @@ export class UsersService {
       return false;
     }
 
-    if (
-      !(await this.rolesService.hasGroupAccess(this.actor.groupMap, user.roles))
-    ) {
+    if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
       throw new UnauthorizedException();
     }
 
@@ -70,9 +68,7 @@ export class UsersService {
       return false;
     }
 
-    if (
-      !(await this.rolesService.hasGroupAccess(this.actor.groupMap, user.roles))
-    ) {
+    if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
       throw new UnauthorizedException();
     }
 

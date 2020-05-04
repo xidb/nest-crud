@@ -26,7 +26,7 @@ export class UserRolesValidator implements ValidatorConstraintInterface {
           return false;
         }
         if (!isGlobalManager) {
-          if (!(await this.rolesService.hasGroupAccess(groupMap, [role]))) {
+          if (!(await this.rolesService.canManage(groupMap, [role]))) {
             return false;
           }
         }

@@ -29,7 +29,7 @@ export class RolesService {
       return roles;
     } else {
       return asyncFilter(roles, role =>
-        this.hasGroupAccess(this.actor.groupMap, [role]),
+        this.canManage(this.actor.groupMap, [role]),
       );
     }
   }
@@ -87,7 +87,7 @@ export class RolesService {
     return RolesService.getNumericRoleType(roleMap) === 0;
   }
 
-  async hasGroupAccess(
+  async canManage(
     actorGroupMap: IGroupMap,
     rolesOrIds: IRole[] | IRole['_id'][],
   ): Promise<boolean> {
