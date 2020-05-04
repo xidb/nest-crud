@@ -5,7 +5,7 @@ import {
   IsString,
   Validate,
 } from 'class-validator';
-import { RolesValidator } from '../../roles/validators/roles.validator';
+import { UserRolesValidator } from '../validators/roles.validator';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -15,6 +15,6 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString({ each: true })
   @ArrayUnique()
-  @Validate(RolesValidator, { message: 'Invalid role' })
+  @Validate(UserRolesValidator, { message: 'Invalid role' })
   readonly roles: string[];
 }

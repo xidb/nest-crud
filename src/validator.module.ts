@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { RolesModule } from './roles/roles.module';
-import { RolesValidator } from './roles/validators/roles.validator';
+import { UserRolesValidator } from './users/validators/roles.validator';
 
 @Module({
   imports: [RolesModule],
-  providers: [RolesValidator],
+  providers: [UserRolesValidator],
 })
 export class ValidatorModule {}

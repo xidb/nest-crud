@@ -1,5 +1,5 @@
 import { ArrayUnique, IsEmail, IsString, Validate } from 'class-validator';
-import { RolesValidator } from '../../roles/validators/roles.validator';
+import { UserRolesValidator } from '../validators/roles.validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -7,6 +7,6 @@ export class CreateUserDto {
 
   @IsString({ each: true })
   @ArrayUnique()
-  @Validate(RolesValidator, { message: 'Invalid role' })
+  @Validate(UserRolesValidator, { message: 'Invalid role' })
   readonly roles: string[];
 }
