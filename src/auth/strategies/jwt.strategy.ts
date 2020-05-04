@@ -29,8 +29,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const roles = await this.rolesService.findByIds(user.roles);
     const roleMap = await this.rolesService.getRoleMap(roles);
     const groupMap = await this.rolesService.getGroupMap(roles);
-    const isGlobalManager = await RolesService.isGlobalManager(roleMap);
+    const groups = Object.keys(groupMap);
+    const numericRoleType = RolesService.getNumericRoleType(roleMap);
+    const isGlobalManager = RolesService.isGlobalManager(roleMap);
 
-    return { ...actor, roleMap, groupMap, isGlobalManager };
+    return {
+      ...actor,
+      roleMap,
+      groupMap,
+      groups,
+      numericRoleType,
+      isGlobalManager,
+    };
   }
 }
