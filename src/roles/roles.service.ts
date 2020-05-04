@@ -28,14 +28,22 @@ export class RolesService {
     if (this.actor.isGlobalManager) {
       return roles;
     } else {
-      return asyncFilter(roles, ({ _id }) =>
-        this.hasAccess(this.actor.groupMap, [_id]),
+      return asyncFilter(roles, role =>
+        this.hasGroupAccess(this.actor.groupMap, [role]),
       );
     }
   }
 
   async findById(id: string): Promise<IRole> {
     return this.roleModel.findById(id);
+  }
+
+  async findByIds(ids: IRole['_id'][]): Promise<IRole[]> {
+    return this.roleModel
+      .find()
+      .where('_id')
+      .in(ids)
+      .exec();
   }
 
   async create(roleInput: CreateRoleDto): Promise<IRole> {
@@ -51,32 +59,20 @@ export class RolesService {
     return (await this.roleModel.findByIdAndDelete(id)) !== null;
   }
 
-  async getRoleMap(ids: IRole['_id'][]): Promise<IRoleMap> {
-    const roles = await this.findByIds(ids);
-
+  async getRoleMap(roles: IRole[]): Promise<IRoleMap> {
     return roles.reduce((acc: IRoleMap, role: IRole) => {
       acc[role._id] = RolesService.convertRoleTypeToNumeric(role.role);
       return acc;
     }, {});
   }
 
-  async getGroupMap(ids: IRole['_id'][]): Promise<IGroupMap> {
-    const roles = await this.findByIds(ids);
-
+  async getGroupMap(roles: IRole[]): Promise<IGroupMap> {
     return roles.reduce((acc: IGroupMap, role: IRole) => {
       if (role.groupId) {
         acc[role.groupId] = RolesService.convertRoleTypeToNumeric(role.role);
       }
       return acc;
     }, {});
-  }
-
-  private async findByIds(ids: IRole['_id'][]): Promise<IRole[]> {
-    return this.roleModel
-      .find()
-      .where('_id')
-      .in(ids)
-      .exec();
   }
 
   private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
@@ -87,18 +83,29 @@ export class RolesService {
     return Object.values(roleMap).includes(0);
   }
 
-  async hasAccess(
-    groupMap: IGroupMap,
-    roleIds: IRole['_id'][],
+  async hasGroupAccess(
+    actorGroupMap: IGroupMap,
+    rolesOrIds: IRole[] | IRole['_id'][],
   ): Promise<boolean> {
-    if (!roleIds.length) {
+    if (!rolesOrIds.length) {
       return true;
     }
 
-    const resourceGroupMap = await this.getGroupMap(roleIds);
+    const roles =
+      typeof rolesOrIds[0] === 'object' && rolesOrIds[0]['_id']
+        ? rolesOrIds
+        : await this.findByIds(rolesOrIds);
+    const resourceGroupMap = await this.getGroupMap(roles);
 
-    for (const groupId in groupMap) {
-      if (!groupMap.hasOwnProperty(groupId)) {
+    return RolesService.checkGroupAccess(actorGroupMap, resourceGroupMap);
+  }
+
+  private static checkGroupAccess(
+    actorGroupMap: IGroupMap,
+    resourceGroupMap: IGroupMap,
+  ): boolean {
+    for (const groupId in actorGroupMap) {
+      if (!actorGroupMap.hasOwnProperty(groupId)) {
         continue;
       }
 
@@ -106,7 +113,7 @@ export class RolesService {
         continue;
       }
 
-      if (groupMap[groupId] <= resourceGroupMap[groupId]) {
+      if (actorGroupMap[groupId] <= resourceGroupMap[groupId]) {
         return true;
       }
     }
