@@ -22,7 +22,7 @@ module.exports = {
       { prefixWithI: 'always' },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/quotes': ['error', 'single'],
+    '@typescript-eslint/quotes': ['error', 'single', { avoidEscape: true }],
     '@typescript-eslint/semi': 'error',
   },
 };
