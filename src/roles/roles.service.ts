@@ -52,4 +52,8 @@ export class RolesService {
   private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
     return Object.values(RoleType).indexOf(roleType);
   }
+
+  static isGlobalManager(roleMap: IRoleMap): boolean {
+    return Object.values(roleMap).includes(0);
+  }
 }

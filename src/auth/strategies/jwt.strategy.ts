@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { RolesService } from '../../roles/roles.service';
-import { IUser } from '../../users/interfaces/user.interface';
+import { IActor } from '../../users/interfaces/actor.interface';
 import { UsersService } from '../../users/users.service';
 import { jwtConstants } from '../constants';
 
@@ -18,7 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any): Promise<IUser> {
+  async validate(payload: any): Promise<IActor> {
     const user = await this.usersService.findById(payload.sub);
 
     if (!user.roles.length) {
@@ -27,6 +27,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const userObject = user.toObject({ versionKey: false });
     userObject.roleMap = await this.rolesService.getRoleMap(user.roles);
+    userObject.isGlobalManager = await RolesService.isGlobalManager(
+      userObject.roleMap,
+    );
 
     return userObject;
   }
