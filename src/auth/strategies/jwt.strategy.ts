@@ -25,12 +25,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException("You don't have any roles");
     }
 
-    const userObject = user.toObject({ versionKey: false });
-    userObject.roleMap = await this.rolesService.getRoleMap(user.roles);
-    userObject.isGlobalManager = await RolesService.isGlobalManager(
-      userObject.roleMap,
-    );
+    const actor = user.toObject({ versionKey: false });
+    const roleMap = await this.rolesService.getRoleMap(user.roles);
+    const groupMap = await this.rolesService.getGroupMap(user.roles);
+    const isGlobalManager = await RolesService.isGlobalManager(roleMap);
 
-    return userObject;
+    return { ...actor, roleMap, groupMap, isGlobalManager };
   }
 }

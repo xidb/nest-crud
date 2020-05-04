@@ -6,6 +6,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './enums/role-type.enum';
 import { IRole } from './interfaces/role.interface';
 import { IRoleMap } from './interfaces/role-map.interface';
+import { IGroupMap } from './interfaces/group-map.interface';
 
 @Injectable()
 export class RolesService {
@@ -41,6 +42,17 @@ export class RolesService {
     }, {});
   }
 
+  async getGroupMap(ids: IRole['_id'][]): Promise<IGroupMap> {
+    const roles = await this.findByIds(ids);
+
+    return roles.reduce((acc: IGroupMap, role: IRole) => {
+      if (role.groupId) {
+        acc[role.groupId] = RolesService.convertRoleTypeToNumeric(role.role);
+      }
+      return acc;
+    }, {});
+  }
+
   private async findByIds(ids: IRole['_id'][]): Promise<IRole[]> {
     return this.roleModel
       .find()
@@ -58,25 +70,25 @@ export class RolesService {
   }
 
   async hasAccess(
-    roleMap: IRoleMap,
+    groupMap: IGroupMap,
     roleIds: IRole['_id'][],
   ): Promise<boolean> {
     if (!roleIds.length) {
       return true;
     }
 
-    const resourceRoleMap = await this.getRoleMap(roleIds);
+    const resourceGroupMap = await this.getGroupMap(roleIds);
 
-    for (const roleId in roleMap) {
-      if (!roleMap.hasOwnProperty(roleId)) {
+    for (const groupId in groupMap) {
+      if (!groupMap.hasOwnProperty(groupId)) {
         continue;
       }
 
-      if (!resourceRoleMap[roleId]) {
+      if (!resourceGroupMap[groupId]) {
         continue;
       }
 
-      if (roleMap[roleId] <= resourceRoleMap[roleId]) {
+      if (groupMap[groupId] <= resourceGroupMap[groupId]) {
         return true;
       }
     }

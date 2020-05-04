@@ -29,7 +29,7 @@ export class UsersService {
       return users;
     } else {
       return asyncFilter(users, user =>
-        this.rolesService.hasAccess(this.actor.roleMap, user.roles),
+        this.rolesService.hasAccess(this.actor.groupMap, user.roles),
       );
     }
   }
