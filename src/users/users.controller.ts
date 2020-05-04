@@ -44,7 +44,7 @@ export class UsersController {
   @UseFilters(UsersDuplicateExceptionFilter)
   @UseInterceptors(new NotFoundInterceptor('User not found'))
   async update(
-    @Param('id') id: string,
+    @Param('id') id: IUser['_id'],
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<boolean> {
     return this.usersService.update(id, updateUserDto);
@@ -52,7 +52,7 @@ export class UsersController {
 
   @Delete(':id')
   @UseInterceptors(new NotFoundInterceptor('User not found'))
-  async remove(@Param('id') id: string): Promise<boolean> {
+  async remove(@Param('id') id: IUser['_id']): Promise<boolean> {
     return this.usersService.remove(id);
   }
 }

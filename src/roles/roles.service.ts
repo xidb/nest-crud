@@ -24,11 +24,11 @@ export class RolesService {
     return await createdRole.save();
   }
 
-  async update(id: string, roleInput: UpdateRoleDto): Promise<boolean> {
+  async update(id: IRole['_id'], roleInput: UpdateRoleDto): Promise<boolean> {
     return (await this.roleModel.findByIdAndUpdate(id, roleInput)) !== null;
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: IRole['_id']): Promise<boolean> {
     return (await this.roleModel.findByIdAndDelete(id)) !== null;
   }
 
@@ -41,7 +41,7 @@ export class RolesService {
     }, {});
   }
 
-  private async findByIds(ids: string[]): Promise<IRole[]> {
+  private async findByIds(ids: IRole['_id'][]): Promise<IRole[]> {
     return this.roleModel
       .find()
       .where('_id')

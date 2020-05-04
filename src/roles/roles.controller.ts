@@ -34,7 +34,7 @@ export class RolesController {
   @Put(':id')
   @UseInterceptors(new NotFoundInterceptor('Role not found'))
   async update(
-    @Param('id') id: string,
+    @Param('id') id: IRole['_id'],
     @Body() updateRoleDto: UpdateRoleDto,
   ): Promise<boolean> {
     return this.rolesService.update(id, updateRoleDto);
@@ -42,7 +42,7 @@ export class RolesController {
 
   @Delete(':id')
   @UseInterceptors(new NotFoundInterceptor('Role not found'))
-  async remove(@Param('id') id: string): Promise<boolean> {
+  async remove(@Param('id') id: IRole['_id']): Promise<boolean> {
     return this.rolesService.remove(id);
   }
 }

@@ -13,7 +13,7 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findById(id: string): Promise<IUser> {
+  async findById(id: IUser['_id']): Promise<IUser> {
     return this.userModel.findById(id);
   }
 
@@ -26,11 +26,11 @@ export class UsersService {
     return await createdUser.save();
   }
 
-  async update(id: string, userInput: UpdateUserDto): Promise<boolean> {
+  async update(id: IUser['_id'], userInput: UpdateUserDto): Promise<boolean> {
     return (await this.userModel.findByIdAndUpdate(id, userInput)) !== null;
   }
 
-  async remove(id: string): Promise<boolean> {
+  async remove(id: IUser['_id']): Promise<boolean> {
     return (await this.userModel.findByIdAndDelete(id)) !== null;
   }
 }
