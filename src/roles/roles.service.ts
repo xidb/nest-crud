@@ -1,16 +1,21 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { BaseService } from '../base/base.service';
 import { asyncFilter } from '../util';
+import { BaseService } from '../base/base.service';
+import { GroupsService } from '../groups/groups.service';
+import { IGroupMap } from '../groups/interfaces/group-map.interface';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './enums/role-type.enum';
 import { IRole } from './interfaces/role.interface';
 import { IRoleMap } from './interfaces/role-map.interface';
-import { IGroupMap } from './interfaces/group-map.interface';
 
 export class RolesService extends BaseService {
-  constructor(@InjectModel('Role') private readonly roleModel: Model<IRole>) {
+  constructor(
+    private readonly groupsService: GroupsService,
+
+    @InjectModel('Role') private readonly roleModel: Model<IRole>,
+  ) {
     super();
   }
 
@@ -58,15 +63,6 @@ export class RolesService extends BaseService {
     }, {});
   }
 
-  async getGroupMap(roles: IRole[]): Promise<IGroupMap> {
-    return roles.reduce((acc: IGroupMap, role: IRole) => {
-      if (role.groupId) {
-        acc[role.groupId] = RolesService.convertRoleTypeToNumeric(role.role);
-      }
-      return acc;
-    }, {});
-  }
-
   static convertRoleTypeToNumeric(roleType: IRole['role']): number {
     return Object.values(RoleType).indexOf(roleType);
   }
@@ -91,7 +87,7 @@ export class RolesService extends BaseService {
       typeof rolesOrIds[0] === 'object' && rolesOrIds[0]['_id']
         ? rolesOrIds
         : await this.findByIds(rolesOrIds);
-    const resourceGroupMap = await this.getGroupMap(roles);
+    const resourceGroupMap = await this.groupsService.getGroupMap(roles);
 
     return RolesService.checkGroupAccess(actorGroupMap, resourceGroupMap);
   }

@@ -1,4 +1,4 @@
-import { IGroupMap } from '../../roles/interfaces/group-map.interface';
+import { IGroupMap } from '../../groups/interfaces/group-map.interface';
 import { IRoleMap } from '../../roles/interfaces/role-map.interface';
 import { IUser } from './user.interface';
 

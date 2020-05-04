@@ -1,14 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { GroupsService } from '../../groups/groups.service';
 import { RolesService } from '../../roles/roles.service';
-import { IActor } from '../../users/interfaces/actor.interface';
 import { UsersService } from '../../users/users.service';
+import { IActor } from '../../users/interfaces/actor.interface';
 import { jwtConstants } from '../constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
+    private readonly groupsService: GroupsService,
     private readonly rolesService: RolesService,
     private readonly usersService: UsersService,
   ) {
@@ -28,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const actor = user.toObject({ versionKey: false });
     const roles = await this.rolesService.findByIds(user.roles);
     const roleMap = await this.rolesService.getRoleMap(roles);
-    const groupMap = await this.rolesService.getGroupMap(roles);
+    const groupMap = await this.groupsService.getGroupMap(roles);
     const groups = Object.keys(groupMap);
     const numericRoleType = RolesService.getNumericRoleType(roleMap);
     const isGlobalManager = RolesService.isGlobalManager(roleMap);

@@ -2,9 +2,12 @@ import { UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BaseService } from '../base/base.service';
+import { RoleType } from '../roles/enums/role-type.enum';
+import { IRole } from '../roles/interfaces/role.interface';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { IGroup } from './interfaces/group.interface';
+import { IGroupMap } from './interfaces/group-map.interface';
 
 export class GroupsService extends BaseService {
   constructor(
@@ -22,6 +25,14 @@ export class GroupsService extends BaseService {
         this.actor.groups.includes(_id.toString()),
       );
     }
+  }
+
+  async findByIds(ids: IGroup['_id']): Promise<IGroup[]> {
+    return this.groupModel
+      .find()
+      .where('_id')
+      .in(ids)
+      .exec();
   }
 
   async create(groupInput: CreateGroupDto): Promise<IGroup> {
@@ -76,5 +87,30 @@ export class GroupsService extends BaseService {
       this.actor.isGlobalManager ||
       (this.actor.numericRoleType <= 1 && this.actor.groups.includes(id))
     );
+  }
+
+  async getGroupMap(roles: IRole[]): Promise<IGroupMap> {
+    const groupMap = {};
+
+    await Promise.all(
+      roles.map(async (role: IRole) => {
+        const { groupId, role: roleType } = role;
+
+        try {
+          const group = await this.groupModel.findById(groupId);
+          if (group) {
+            groupMap[groupId] = GroupsService.convertRoleTypeToNumeric(
+              roleType,
+            );
+          }
+        } catch (_e) {}
+      }),
+    );
+
+    return groupMap;
+  }
+
+  private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
+    return Object.values(RoleType).indexOf(roleType);
   }
 }
