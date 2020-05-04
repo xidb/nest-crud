@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { RolesModule } from './roles/roles.module';
-import { UserRolesValidator } from './users/validators/roles.validator';
+import { RolesModule } from '../roles/roles.module';
+import { UserRolesValidator } from '../users/validators/roles.validator';
 
 @Module({
   imports: [RolesModule],
