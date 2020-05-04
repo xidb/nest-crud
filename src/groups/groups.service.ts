@@ -38,6 +38,11 @@ export class GroupsService {
     }
   }
 
+  async createSeed(groupInput: CreateGroupDto): Promise<IGroup> {
+    const createdGroup = new this.groupModel(groupInput);
+    return await createdGroup.save();
+  }
+
   async update(
     id: IGroup['_id'],
     groupInput: UpdateGroupDto,

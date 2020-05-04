@@ -34,9 +34,9 @@ export class GroupsController {
   }
 
   @Post()
-  async create(@Body() createGroupDto: CreateGroupDto): Promise<void> {
+  async create(@Body() createGroupDto: CreateGroupDto): Promise<IGroup> {
     this.groupsService.setActor(this.request.user);
-    await this.groupsService.create(createGroupDto);
+    return await this.groupsService.create(createGroupDto);
   }
 
   @Put(':id')

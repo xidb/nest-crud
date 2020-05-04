@@ -34,9 +34,9 @@ export class RolesController {
   }
 
   @Post()
-  async create(@Body() createRoleDto: CreateRoleDto): Promise<void> {
+  async create(@Body() createRoleDto: CreateRoleDto): Promise<IRole> {
     this.rolesService.setActor(this.request.user);
-    await this.rolesService.create(createRoleDto);
+    return await this.rolesService.create(createRoleDto);
   }
 
   @Put(':id')

@@ -37,9 +37,9 @@ export class UsersController {
 
   @Post()
   @UseFilters(UsersDuplicateExceptionFilter)
-  async create(@Body() createUserDto: CreateUserDto): Promise<void> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<IUser> {
     this.usersService.setActor(this.request.user);
-    await this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto);
   }
 
   @Put(':id')

@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CommandModule } from 'nestjs-command';
 import { ValidatorModule } from './validation/validation.module';
 import { AuthModule } from './auth/auth.module';
 import { GroupsModule } from './groups/groups.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
+import { GlobalManagerSeed } from './seeds/global-manager.seed';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { UsersModule } from './users/users.module';
     RolesModule,
     UsersModule,
     GroupsModule,
+    CommandModule,
   ],
+  providers: [GlobalManagerSeed],
 })
 export class AppModule {}

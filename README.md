@@ -19,3 +19,9 @@ MongoDB is inside Docker container. There is a `docker-compose.yml` file for sta
 Then, run Nest as usual:
 
 `npm run start`
+
+#### Create globalManager
+
+Run to create globalManager with group and a role:
+
+`npx nestjs-command create:globalManager`
