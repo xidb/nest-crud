@@ -75,12 +75,16 @@ export class RolesService {
     }, {});
   }
 
-  private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
+  static convertRoleTypeToNumeric(roleType: IRole['role']): number {
     return Object.values(RoleType).indexOf(roleType);
   }
 
+  static getNumericRoleType(roleMap: IRoleMap): number {
+    return Math.min(...Object.values(roleMap));
+  }
+
   static isGlobalManager(roleMap: IRoleMap): boolean {
-    return Object.values(roleMap).includes(0);
+    return RolesService.getNumericRoleType(roleMap) === 0;
   }
 
   async hasGroupAccess(
