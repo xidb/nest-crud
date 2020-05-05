@@ -9,6 +9,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleType } from './enums/role-type.enum';
 import { IRole } from './interfaces/role.interface';
 import { IRoleMap } from './interfaces/role-map.interface';
+import { ForbiddenException } from '@nestjs/common';
 
 export class RolesService extends BaseService {
   constructor(
@@ -44,16 +45,40 @@ export class RolesService extends BaseService {
   }
 
   async create(roleInput: CreateRoleDto): Promise<IRole> {
+    if (this.actor.numericRoleType > 1) {
+      throw new ForbiddenException('Unsufficient role');
+    }
+
     const createdRole = new this.roleModel(roleInput);
     return await createdRole.save();
   }
 
   async update(id: IRole['_id'], roleInput: UpdateRoleDto): Promise<boolean> {
-    return (await this.roleModel.findByIdAndUpdate(id, roleInput)) !== null;
+    const role = await this.roleModel.findById(id);
+
+    if (!role) {
+      return false;
+    }
+
+    if (!(await this.canManage(this.actor.groupMap, [role]))) {
+      throw new ForbiddenException('Insufficient role or no access to a group');
+    }
+
+    await role.update(roleInput);
   }
 
   async remove(id: IRole['_id']): Promise<boolean> {
-    return (await this.roleModel.findByIdAndDelete(id)) !== null;
+    const role = await this.roleModel.findById(id);
+
+    if (!role) {
+      return false;
+    }
+
+    if (!(await this.canManage(this.actor.groupMap, [role]))) {
+      throw new ForbiddenException('Insufficient role or no access to a group');
+    }
+
+    await role.remove();
   }
 
   async getRoleMap(roles: IRole[]): Promise<IRoleMap> {

@@ -36,10 +36,12 @@ export class GroupsService extends BaseService {
   }
 
   async create(groupInput: CreateGroupDto): Promise<IGroup> {
-    if (this.canManage()) {
-      const createdGroup = new this.groupModel(groupInput);
-      return await createdGroup.save();
+    if (!this.canManage()) {
+      throw new ForbiddenException('Insufficient role');
     }
+
+    const createdGroup = new this.groupModel(groupInput);
+    return await createdGroup.save();
   }
 
   async createSeed(groupInput: CreateGroupDto): Promise<IGroup> {
@@ -58,7 +60,7 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('Insufficient role or no access to a group');
     }
 
     await group.update(groupInput);
@@ -72,7 +74,7 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('Insufficient role or no access to a group');
     }
 
     await group.remove();

@@ -36,6 +36,10 @@ export class UsersService extends BaseService {
   }
 
   async create(userInput: CreateUserDto): Promise<IUser> {
+    if (this.actor.numericRoleType > 1) {
+      throw new ForbiddenException('Insufficient role');
+    }
+
     const createdUser = new this.userModel(userInput);
     return await createdUser.save();
   }
@@ -48,7 +52,7 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('Insufficient role or no access to a group');
     }
 
     await user.update(userInput);
@@ -62,7 +66,7 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new ForbiddenException();
+      throw new ForbiddenException('Insufficient role or no access to a group');
     }
 
     await user.remove();
