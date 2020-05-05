@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BaseService } from '../base/base.service';
@@ -48,7 +48,7 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     await user.update(userInput);
@@ -62,7 +62,7 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     await user.remove();

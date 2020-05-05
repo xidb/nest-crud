@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BaseService } from '../base/base.service';
@@ -58,7 +58,7 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     await group.update(groupInput);
@@ -72,7 +72,7 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     await group.remove();
