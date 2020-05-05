@@ -35,6 +35,10 @@ export class GroupsService extends BaseService {
       .exec();
   }
 
+  async findAllExceptIds(ids: IGroup['_id'][]): Promise<IGroup[]> {
+    return this.groupModel.find({ _id: { $not: { $all: ids } } });
+  }
+
   async create(groupInput: CreateGroupDto): Promise<IGroup> {
     if (!this.canManage()) {
       throw new ForbiddenException('Insufficient role');
