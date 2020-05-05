@@ -89,14 +89,11 @@ export class GroupsService extends BaseService {
   }
 
   canManage(id?: IGroup['_id']): boolean {
-    if (!id) {
+    if (!id || this.actor.isGlobalManager) {
       return this.actor.numericRoleType <= 1;
     }
 
-    return (
-      this.actor.isGlobalManager ||
-      (this.actor.numericRoleType <= 1 && this.actor.groups.includes(id))
-    );
+    return this.actor.numericRoleType <= 1 && this.actor.groups.includes(id);
   }
 
   async getGroupMap(roles: IRole[]): Promise<IGroupMap> {

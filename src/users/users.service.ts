@@ -36,7 +36,7 @@ export class UsersService extends BaseService {
   }
 
   async create(userInput: CreateUserDto): Promise<IUser> {
-    if (this.actor.numericRoleType > 1) {
+    if (!this.canManage()) {
       throw new ForbiddenException('Insufficient role');
     }
 
@@ -51,7 +51,7 @@ export class UsersService extends BaseService {
       return false;
     }
 
-    if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
+    if (!(await this.canManage(user))) {
       throw new ForbiddenException(
         "Insufficient role or resource doesn't belong to a group",
       );
@@ -67,12 +67,20 @@ export class UsersService extends BaseService {
       return false;
     }
 
-    if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
+    if (!(await this.canManage(user))) {
       throw new ForbiddenException(
         "Insufficient role or resource doesn't belong to a group",
       );
     }
 
     await user.remove();
+  }
+
+  async canManage(user?: IUser): Promise<boolean> {
+    if (!user || this.actor.isGlobalManager) {
+      return this.actor.numericRoleType <= 1;
+    }
+
+    return this.rolesService.canManage(this.actor.groupMap, user.roles);
   }
 }
