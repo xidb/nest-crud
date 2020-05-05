@@ -49,7 +49,9 @@ export class CollectionsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await collection.update(collectionInput);
@@ -63,7 +65,9 @@ export class CollectionsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await collection.remove();

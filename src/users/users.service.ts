@@ -52,7 +52,9 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await user.update(userInput);
@@ -66,7 +68,9 @@ export class UsersService extends BaseService {
     }
 
     if (!(await this.rolesService.canManage(this.actor.groupMap, user.roles))) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await user.remove();

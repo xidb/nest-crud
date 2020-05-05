@@ -64,7 +64,9 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await group.update(groupInput);
@@ -78,7 +80,9 @@ export class GroupsService extends BaseService {
     }
 
     if (!this.canManage(id)) {
-      throw new ForbiddenException('Insufficient role or no access to a group');
+      throw new ForbiddenException(
+        "Insufficient role or resource doesn't belong to a group",
+      );
     }
 
     await group.remove();
