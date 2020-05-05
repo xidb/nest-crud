@@ -29,7 +29,6 @@ export class CollectionsController {
 
   @Get()
   async findAll(): Promise<ICollection[]> {
-    console.log(this.request.user);
     this.collectionsService.setActor(this.request.user);
     return this.collectionsService.findAll();
   }
