@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { GroupsModule } from '../groups/groups.module';
 import { RolesModule } from '../roles/roles.module';
 import { UsersModule } from '../users/users.module';
+import { ItemsModule } from '../items/items.module';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -15,6 +16,7 @@ import { AuthController } from './auth.controller';
     GroupsModule,
     RolesModule,
     UsersModule,
+    ItemsModule,
     PassportModule,
     JwtModule.register({ secret: jwtConstants.secret }),
   ],

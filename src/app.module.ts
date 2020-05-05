@@ -7,6 +7,7 @@ import { GroupsModule } from './groups/groups.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { CollectionsModule } from './collections/collections.module';
+import { ItemsModule } from './items/items.module';
 import { GlobalManagerSeed } from './seeds/global-manager.seed';
 
 @Module({
@@ -18,6 +19,7 @@ import { GlobalManagerSeed } from './seeds/global-manager.seed';
     RolesModule,
     UsersModule,
     CollectionsModule,
+    ItemsModule,
     CommandModule,
   ],
   providers: [GlobalManagerSeed],

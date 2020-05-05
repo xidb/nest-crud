@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { GroupsService } from '../../groups/groups.service';
 import { RolesService } from '../../roles/roles.service';
 import { UsersService } from '../../users/users.service';
+import { ItemsService } from '../../items/items.service';
 import { IActor } from '../../users/interfaces/actor.interface';
 import { jwtConstants } from '../constants';
 
@@ -13,6 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly groupsService: GroupsService,
     private readonly rolesService: RolesService,
     private readonly usersService: UsersService,
+    private readonly itemsService: ItemsService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -33,6 +35,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const groupMap = await this.groupsService.getGroupMap(roles);
     const groups = Object.keys(groupMap);
     const collectionIds = await this.groupsService.getCollectionIds(groups);
+    const itemIds = await this.itemsService.getItemIds(collectionIds);
     const numericRoleType = RolesService.getNumericRoleType(roleMap);
     const isGlobalManager = RolesService.isGlobalManager(roleMap);
 
@@ -42,6 +45,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       groupMap,
       groups,
       collectionIds,
+      itemIds,
       numericRoleType,
       isGlobalManager,
     };
