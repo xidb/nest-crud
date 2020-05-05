@@ -115,4 +115,18 @@ export class GroupsService extends BaseService {
   private static convertRoleTypeToNumeric(roleType: IRole['role']): number {
     return Object.values(RoleType).indexOf(roleType);
   }
+
+  async getCollectionIds(
+    ids: IGroup['_id'][],
+  ): Promise<IGroup['collectionIds']> {
+    const groups = await this.findByIds(ids);
+    return groups.reduce((acc, { collectionIds }) => {
+      collectionIds.forEach(id => {
+        if (!acc.includes(id)) {
+          acc.push(id);
+        }
+      });
+      return acc;
+    }, []);
+  }
 }

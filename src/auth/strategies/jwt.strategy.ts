@@ -32,6 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const roleMap = await this.rolesService.getRoleMap(roles);
     const groupMap = await this.groupsService.getGroupMap(roles);
     const groups = Object.keys(groupMap);
+    const collectionIds = await this.groupsService.getCollectionIds(groups);
     const numericRoleType = RolesService.getNumericRoleType(roleMap);
     const isGlobalManager = RolesService.isGlobalManager(roleMap);
 
@@ -40,6 +41,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       roleMap,
       groupMap,
       groups,
+      collectionIds,
       numericRoleType,
       isGlobalManager,
     };
